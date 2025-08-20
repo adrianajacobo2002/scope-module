@@ -1,0 +1,84 @@
+<odoo>
+    <template id="report_sale_proposal_unified_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <t t-if="doc.team_id.company_info_template">
+                            <div t-raw="doc.team_id.company_info_template" />
+                        </t>
+
+                        <t t-if="doc.team_id.service_info_template">
+                            <div t-raw="doc.team_id.service_info_template" />
+                        </t>
+
+                        <t t-foreach="doc.order_line" t-as="line">
+                            <t t-set="tmpl_id" t-value="line.product_id.product_tmpl_id.id" />
+                            <t t-set="scope_team"
+                                t-value="env['sale.module.scope'].search([('product_tmpl_id','=',tmpl_id),('active','=',True),('team_ids','in',doc.team_id.id)], limit=1)" />
+                            <t t-set="scope_global"
+                                t-value="env['sale.module.scope'].search([('product_tmpl_id','=',tmpl_id),('active','=',True),('team_ids','=',False)], limit=1)" />
+                            <t t-set="scope" t-value="scope_team or scope_global" />
+                            <t t-if="scope">
+                                <h3 t-esc="scope.name" />
+                                <div t-raw="scope.description_html" />
+                            </t>
+                        </t>
+
+                        <h3>Propuesta Económica</h3>
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Descripción</th>
+                                    <th class="text-right">Cantidad</th>
+                                    <th class="text-right">Precio</th>
+                                    <th class="text-right">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.order_line" t-as="l">
+                                    <tr>
+                                        <td>
+                                            <span t-esc="l.name" />
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="l.product_uom_qty" />
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="l.price_unit"
+                                                t-options="{'widget':'monetary','display_currency': doc.currency_id}" />
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="l.price_subtotal"
+                                                t-options="{'widget':'monetary','display_currency': doc.currency_id}" />
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-right">
+                                        <strong>Impuestos</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="doc.amount_tax"
+                                            t-options="{'widget':'monetary','display_currency': doc.currency_id}" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-right">
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="doc.amount_total"
+                                            t-options="{'widget':'monetary','display_currency': doc.currency_id}" />
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

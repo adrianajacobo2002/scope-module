@@ -1,0 +1,34 @@
+<odoo>
+    <record id="view_crm_team_form_inherit_tech_proposal" model="ir.ui.view">
+        <field name="name">crm.team.form.tech.proposal</field>
+        <field name="model">crm.team</field>
+        <field name="inherit_id" ref="sales_team.crm_team_view_form" />
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Propuesta técnica">
+                    <group>
+                        <field name="incluir_propuesta_tecnica" />
+                    </group>
+
+                    <group string="Plantillas (HTML)" invisible="not incluir_propuesta_tecnica">
+                        <group>
+                            <label for="company_info_template" string="Información de la empresa" />
+                            <field name="company_info_template" />
+                        </group>
+                        <group>
+                            <label for="service_info_template" string="Información del servicio" />
+                            <field name="service_info_template" />
+                        </group>
+                    </group>
+
+                    <group string="Plantilla PDF (opcional)"
+                        invisible="not incluir_propuesta_tecnica">
+                        <field name="use_base_pdf" />
+                        <field name="base_pdf" filename="base_pdf_filename" />
+                        <field name="base_pdf_filename" invisible="not base_pdf" />
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

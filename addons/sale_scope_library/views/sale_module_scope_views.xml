@@ -1,0 +1,57 @@
+<odoo>
+    <record id="view_sale_module_scope_tree" model="ir.ui.view">
+        <field name="name">sale.module.scope.tree</field>
+        <field name="model">sale.module.scope</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="product_tmpl_id" />
+                <field name="team_ids" />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_sale_module_scope_form" model="ir.ui.view">
+        <field name="name">sale.module.scope.form</field>
+        <field name="model">sale.module.scope</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="product_tmpl_id" />
+                        <field name="team_ids" widget="many2many_tags" />
+                        <field name="active" />
+                    </group>
+                    <notebook>
+                        <page string="Alcance">
+                            <field name="description_html" nolabel="1" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_sale_module_scope_search" model="ir.ui.view">
+        <field name="name">sale.module.scope.search</field>
+        <field name="model">sale.module.scope</field>
+        <field name="arch" type="xml">
+            <search string="Buscar alcances">
+                <field name="name" />
+                <field name="product_tmpl_id" />
+                <field name="team_ids" />
+                <filter name="active" string="Activos" domain="[('active','=',True)]"
+                    help="Solo activos" />
+            </search>
+        </field>
+    </record>
+
+    <record id="action_sale_module_scope" model="ir.actions.act_window">
+        <field name="name">Alcances por Producto</field>
+        <field name="res_model">sale.module.scope</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

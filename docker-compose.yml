@@ -1,0 +1,36 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres:15
+    ports:
+      - "${DB_HOST_PORT:-5433}:5432"
+    environment:
+      POSTGRES_DB: ${PG_DB}
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+
+  web:
+    image: odoo:${ODOO_VERSION}
+    depends_on:
+      - db
+    ports:
+      - "${ODOO_PORT:-8069}:8069"
+    volumes:
+      - ./addons:/mnt/extra-addons
+      - ./odoo_conf/odoo.conf:/etc/odoo/odoo.conf:ro
+    environment:
+      HOST: db
+      USER: ${PG_USER}
+      PASSWORD: ${PG_PASSWORD}
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025" 
+      - "1025:1025" 
+      
+volumes:
+  odoo-db-data:

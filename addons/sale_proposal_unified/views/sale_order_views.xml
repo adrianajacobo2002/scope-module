@@ -1,0 +1,16 @@
+<odoo>
+    <record id="view_order_form_inherit_proposal_btn" model="ir.ui.view">
+        <field name="name">sale.order.form.proposal.btn</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="action_print_proposal_merged"
+                    type="object"
+                    class="btn-primary"
+                    string="Imprimir Propuesta Unificada (PDF)"
+                    invisible="state == 'cancel'" />
+            </header>
+        </field>
+    </record>
+</odoo>
