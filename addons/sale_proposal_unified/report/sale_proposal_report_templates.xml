@@ -4,24 +4,34 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <t t-if="doc.team_id.company_info_template">
+
+                        <t
+                            t-if="doc.team_id.company_source == 'html' and doc.team_id.company_info_template">
                             <div t-raw="doc.team_id.company_info_template" />
                         </t>
 
-                        <t t-if="doc.team_id.service_info_template">
+                        
+                        <t
+                            t-if="doc.team_id.service_source == 'html' and doc.team_id.service_info_template">
                             <div t-raw="doc.team_id.service_info_template" />
                         </t>
 
                         <t t-foreach="doc.order_line" t-as="line">
                             <t t-set="tmpl_id" t-value="line.product_id.product_tmpl_id.id" />
                             <t t-set="scope_team"
-                                t-value="env['sale.module.scope'].search([('product_tmpl_id','=',tmpl_id),('active','=',True),('team_ids','in',doc.team_id.id)], limit=1)" />
-                            <t t-set="scope_global"
-                                t-value="env['sale.module.scope'].search([('product_tmpl_id','=',tmpl_id),('active','=',True),('team_ids','=',False)], limit=1)" />
-                            <t t-set="scope" t-value="scope_team or scope_global" />
-                            <t t-if="scope">
-                                <h3 t-esc="scope.name" />
-                                <div t-raw="scope.description_html" />
+                                t-value="env['sale.module.scope'].search([
+                               ('product_tmpl_id','=',tmpl_id),
+                               ('active','=',True),
+                               ('team_ids','in', doc.team_id.id)
+                             ], limit=1)" />
+                            <t t-if="scope_team">
+                                <h3>
+                                    <t t-esc="scope_team.name" />
+                                    <small style="font-weight: normal; color:#666;"> – Equipo: <t
+                                            t-esc="doc.team_id.name" />
+                                    </small>
+                                </h3>
+                                <div t-raw="scope_team.description_html" />
                             </t>
                         </t>
 

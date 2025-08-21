@@ -1,3 +1,4 @@
+<!-- crm_team_views.xml -->
 <odoo>
     <record id="view_crm_team_form_inherit_tech_proposal" model="ir.ui.view">
         <field name="name">crm.team.form.tech.proposal</field>
@@ -10,22 +11,44 @@
                         <field name="incluir_propuesta_tecnica" />
                     </group>
 
-                    <group string="Plantillas (HTML)" invisible="not incluir_propuesta_tecnica">
+                    <group string="Información de la empresa"
+                        modifiers="{'invisible': [['incluir_propuesta_tecnica','=',False]]}">
                         <group>
-                            <label for="company_info_template" string="Información de la empresa" />
+                            <field name="company_source" />
+                        </group>
+                        <group modifiers="{'invisible': [['company_source','!=','html']]}">
+                            <label for="company_info_template" string="Contenido (HTML)" />
                             <field name="company_info_template" />
                         </group>
+                        <group modifiers="{'invisible': [['company_source','!=','pdf']]}">
+                            <label for="company_info_pdf" string="Archivo (PDF)" />
+                            <field name="company_info_pdf" filename="company_info_pdf_filename" />
+                            <field name="company_info_pdf_filename" invisible="1" />
+                        </group>
+                    </group>
+
+                    <group string="Información del servicio"
+                        modifiers="{'invisible': [['incluir_propuesta_tecnica','=',False]]}">
                         <group>
-                            <label for="service_info_template" string="Información del servicio" />
+                            <field name="service_source" />
+                        </group>
+                        <group modifiers="{'invisible': [['service_source','!=','html']]}">
+                            <label for="service_info_template" string="Contenido (HTML)" />
                             <field name="service_info_template" />
+                        </group>
+                        <group modifiers="{'invisible': [['service_source','!=','pdf']]}">
+                            <label for="service_info_pdf" string="Archivo (PDF)" />
+                            <field name="service_info_pdf" filename="service_info_pdf_filename" />
+                            <field name="service_info_pdf_filename" invisible="1" />
                         </group>
                     </group>
 
                     <group string="Plantilla PDF (opcional)"
-                        invisible="not incluir_propuesta_tecnica">
+                        modifiers="{'invisible': [['incluir_propuesta_tecnica','=',False]]}">
                         <field name="use_base_pdf" />
-                        <field name="base_pdf" filename="base_pdf_filename" />
-                        <field name="base_pdf_filename" invisible="not base_pdf" />
+                        <field name="base_pdf" filename="base_pdf_filename"
+                            modifiers="{'invisible': [['use_base_pdf','=',False]]}" />
+                        <field name="base_pdf_filename" invisible="1" />
                     </group>
                 </page>
             </notebook>

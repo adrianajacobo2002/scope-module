@@ -9,7 +9,7 @@
                     type="object"
                     class="btn-primary"
                     string="Imprimir Propuesta Unificada (PDF)"
-                    invisible="state == 'cancel'" />
+                    modifiers="{'invisible': ['|', ['state','=','cancel'], '|', ['team_id','=',False], ['team_id.incluir_propuesta_tecnica','=',False]]}" />
             </header>
         </field>
     </record>
