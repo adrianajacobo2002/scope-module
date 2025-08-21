@@ -15,6 +15,11 @@ class SaleOrder(models.Model):
         help="Se calcula desde sale.module.scope activo para el equipo seleccionado.",
     )
 
+    extra_scope_html = fields.Html(
+        string="Alcance adicional (casos especiales)",
+        help="Se mostrará si se necesita complementar o no existe un alcance estándar."
+    )
+    
     @api.depends("team_id")
     def _compute_allowed_products(self):
         Scope = self.env["sale.module.scope"].sudo()
@@ -72,9 +77,6 @@ class SaleOrder(models.Model):
 
     def _render_proposal_pdf(self):
         self.ensure_one()
-
-        report_service = self.env["ir.actions.report"].sudo()
-        template_name = "sale_proposal_unified.report_sale_proposal_unified_document"
 
         pdf_main, _ = (
             self.env["ir.actions.report"]

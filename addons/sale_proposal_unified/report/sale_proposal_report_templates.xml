@@ -10,7 +10,7 @@
                             <div t-raw="doc.team_id.company_info_template" />
                         </t>
 
-                        
+
                         <t
                             t-if="doc.team_id.service_source == 'html' and doc.team_id.service_info_template">
                             <div t-raw="doc.team_id.service_info_template" />
@@ -27,12 +27,25 @@
                             <t t-if="scope_team">
                                 <h3>
                                     <t t-esc="scope_team.name" />
-                                    <small style="font-weight: normal; color:#666;"> – Equipo: <t
+                                    <small style="font-weight: normal; color:#666;"> <span t-translate="yes">– Equipo:</span> <t
                                             t-esc="doc.team_id.name" />
                                     </small>
                                 </h3>
                                 <div t-raw="scope_team.description_html" />
                             </t>
+                            <t t-else="">
+                                <t t-if="line.custom_scope_html">
+                                    <h3 t-translate="yes">
+                                        <t t-esc="line.name" />
+                                    </h3>
+                                    <div t-raw="line.custom_scope_html" />
+                                </t>
+                            </t>
+                        </t>
+
+                        <t t-if="doc.extra_scope_html">
+                            <h3>Alcance adicional</h3>
+                            <div t-raw="doc.extra_scope_html" />
                         </t>
 
                         <h3>Propuesta Económica</h3>

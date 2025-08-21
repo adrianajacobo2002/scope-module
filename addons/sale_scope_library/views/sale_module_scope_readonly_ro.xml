@@ -1,0 +1,31 @@
+<odoo>
+  <record id="view_sale_module_scope_tree_ro" model="ir.ui.view">
+    <field name="name">sale.module.scope.tree.readonly</field>
+    <field name="model">sale.module.scope</field>
+    <field name="priority" eval="50"/>
+    <field name="groups_id" eval="[(4, ref('sale_scope_library.group_proposal_user'))]"/>
+    <field name="arch" type="xml">
+      <tree string="Alcances por Producto" create="0" delete="0">
+        <field name="name" string="Nombre del alcance"/>
+        <field name="product_tmpl_id" string="Producto (plantilla)"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_sale_module_scope_form_ro" model="ir.ui.view">
+    <field name="name">sale.module.scope.form.readonly</field>
+    <field name="model">sale.module.scope</field>
+    <field name="priority" eval="50"/>
+    <field name="groups_id" eval="[(4, ref('sale_scope_library.group_proposal_user'))]"/>
+    <field name="arch" type="xml">
+      <form string="Alcance por Producto" create="0" edit="0" delete="0" duplicate="0">
+        <sheet>
+          <group>
+            <field name="name"/>
+            <field name="product_tmpl_id" options="{'no_create_edit': true, 'no_create': true}"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+</odoo>

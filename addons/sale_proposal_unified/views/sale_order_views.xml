@@ -9,8 +9,32 @@
                     type="object"
                     class="btn-primary"
                     string="Imprimir Propuesta Unificada (PDF)"
-                    modifiers="{'invisible': ['|', ['state','=','cancel'], '|', ['team_id','=',False], ['team_id.incluir_propuesta_tecnica','=',False]]}" />
+                    modifiers="{'invisible': ['|', ['state','=','cancel'], ['|', ['team_id','=',False], ['team_id.incluir_propuesta_tecnica','=',False]]]}" />
             </header>
+        </field>
+    </record>
+
+    <record id="view_order_form_inherit_extra_scope" model="ir.ui.view">
+        <field name="name">sale.order.form.extra.scope</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Alcance adicional"
+                    modifiers="{'invisible': ['|', ['team_id','=',False], ['team_id.incluir_propuesta_tecnica','=',False]]}">
+                    <group>
+                        <field name="extra_scope_html" />
+                    </group>
+                </page>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/form//group" position="inside">
+                <group
+                    modifiers="{'invisible': ['|', ['parent.team_id','=',False], ['parent.team_id.incluir_propuesta_tecnica','=',False]]}">
+                    <field name="custom_scope_html" />
+                </group>
+            </xpath>
         </field>
     </record>
 </odoo>

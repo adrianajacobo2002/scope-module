@@ -1,0 +1,19 @@
+<odoo>
+  <record id="module_category_sales_proposals" model="ir.module.category">
+    <field name="name">Sales / Proposals</field>
+    <field name="sequence">15</field>
+    <field name="parent_id" ref="base.module_category_sales_sales"/>
+  </record>
+
+  <record id="group_proposal_manager" model="res.groups">
+    <field name="name">Sales Proposal Manager</field>
+    <field name="category_id" ref="sale_scope_library.module_category_sales_proposals"/>
+    <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_manager'))]"/>
+  </record>
+
+  <record id="group_proposal_user" model="res.groups">
+    <field name="name">Sales Proposal User</field>
+    <field name="category_id" ref="sale_scope_library.module_category_sales_proposals"/>
+    <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+  </record>
+</odoo>

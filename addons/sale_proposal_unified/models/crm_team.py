@@ -13,7 +13,7 @@ class CrmTeam(models.Model):
         required=True
     )
     
-    company_info_template = fields.Html(string="Información de la empresa (HTML)")
+    company_info_template = fields.Html(string="Información de la empresa (HTML)", translate=True)
     company_info_pdf = fields.Binary(string="Información de la empresa (PDF)")
     company_info_pdf_filename = fields.Char(string="Nombre del PDF (empresa)")
     
@@ -24,11 +24,10 @@ class CrmTeam(models.Model):
         required=True
     )
     
-    service_info_template = fields.Html(string="Información del servicio (HTML)")
+    service_info_template = fields.Html(string="Información del servicio (HTML)",  translate=True)
     service_info_pdf = fields.Binary(string="Información del servicio (PDF)")
     service_info_pdf_filename = fields.Char(string="Nombre del PDF (servicio)")
     
-    use_base_pdf = fields.Boolean("Anteponer PDF base")
     base_pdf = fields.Binary("Plantilla base (PDF)")
     base_pdf_filename = fields.Char("Nombre de archivo PDF")
     

@@ -1,55 +1,63 @@
-<!-- crm_team_views.xml -->
 <odoo>
     <record id="view_crm_team_form_inherit_tech_proposal" model="ir.ui.view">
         <field name="name">crm.team.form.tech.proposal</field>
         <field name="model">crm.team</field>
         <field name="inherit_id" ref="sales_team.crm_team_view_form" />
         <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook" position="before">
+                <group name="grp_flag_propuesta">
+                    <field name="incluir_propuesta_tecnica" class="o_highlight" />
+                </group>
+            </xpath>
             <notebook position="inside">
-                <page string="Propuesta técnica">
-                    <group>
-                        <field name="incluir_propuesta_tecnica" />
+                <field name="incluir_propuesta_tecnica" invisible="1" />
+
+                <page string="Propuesta técnica"
+                    modifiers="{'invisible': [['incluir_propuesta_tecnica','=',False]]}">
+
+                    <group string="Portada PDF">
+                        <label for="base_pdf" string="Portada PDF"/>
+                        <field name="base_pdf" filename="base_pdf_filename" nolabel="1"/>
+                        <field name="base_pdf_filename" invisible="1" />
                     </group>
 
-                    <group string="Información de la empresa"
-                        modifiers="{'invisible': [['incluir_propuesta_tecnica','=',False]]}">
+                    <group string="Información de la empresa">
                         <group>
                             <field name="company_source" />
                         </group>
+
                         <group modifiers="{'invisible': [['company_source','!=','html']]}">
-                            <label for="company_info_template" string="Contenido (HTML)" />
-                            <field name="company_info_template" />
+                            <label for="company_info_template" string="Información General de la Empresa" />
+                            <field name="company_info_template" nolabel="1" />
                         </group>
+
                         <group modifiers="{'invisible': [['company_source','!=','pdf']]}">
-                            <label for="company_info_pdf" string="Archivo (PDF)" />
-                            <field name="company_info_pdf" filename="company_info_pdf_filename" />
+                            <label for="company_info_pdf" string="PDF Información Empresa" />
+                            <field name="company_info_pdf" filename="company_info_pdf_filename"
+                                nolabel="1" />
                             <field name="company_info_pdf_filename" invisible="1" />
                         </group>
                     </group>
 
-                    <group string="Información del servicio"
-                        modifiers="{'invisible': [['incluir_propuesta_tecnica','=',False]]}">
+                    <group string="Información del servicio">
                         <group>
                             <field name="service_source" />
                         </group>
+
                         <group modifiers="{'invisible': [['service_source','!=','html']]}">
-                            <label for="service_info_template" string="Contenido (HTML)" />
-                            <field name="service_info_template" />
+                            <label for="service_info_template" string="Información del Servicio" />
+                            <field name="service_info_template" nolabel="1" />
                         </group>
+
                         <group modifiers="{'invisible': [['service_source','!=','pdf']]}">
-                            <label for="service_info_pdf" string="Archivo (PDF)" />
-                            <field name="service_info_pdf" filename="service_info_pdf_filename" />
+                            <label for="service_info_pdf" string="PDF Información Servicio" />
+                            <field name="service_info_pdf" filename="service_info_pdf_filename"
+                                nolabel="1" />
                             <field name="service_info_pdf_filename" invisible="1" />
                         </group>
                     </group>
 
-                    <group string="Plantilla PDF (opcional)"
-                        modifiers="{'invisible': [['incluir_propuesta_tecnica','=',False]]}">
-                        <field name="use_base_pdf" />
-                        <field name="base_pdf" filename="base_pdf_filename"
-                            modifiers="{'invisible': [['use_base_pdf','=',False]]}" />
-                        <field name="base_pdf_filename" invisible="1" />
-                    </group>
+
                 </page>
             </notebook>
         </field>
