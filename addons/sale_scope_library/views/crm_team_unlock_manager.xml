@@ -2,7 +2,6 @@
     <record id="crm_team_tree_unlock" model="ir.ui.view">
         <field name="name">crm.team.tree.unlock</field>
         <field name="model">crm.team</field>
-        <!-- OJO: este id puede variar; ver nota abajo -->
         <field name="inherit_id" ref="sales_team.crm_team_view_tree" />
         <field name="priority" eval="99" />
         <field name="arch" type="xml">

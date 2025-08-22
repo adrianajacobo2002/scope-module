@@ -6,25 +6,22 @@
     <field name="priority" eval="20" />
     <field name="arch" type="xml">
 
-      <!-- Poner el Equipo de ventas justo después del Cliente -->
       <xpath expr="//sheet//group//field[@name='partner_id']" position="after">
         <field name="team_id"
           class="o_highlight"
           options="{'no_create': True, 'no_open': True}" />
       </xpath>
 
-      <!-- Hacer disponible el campo compute para usarlo en los dominios -->
       <xpath expr="//sheet" position="inside">
         <field name="allowed_product_ids" invisible="1" />
       </xpath>
 
-      <!-- Dominio en el árbol del One2many -->
       <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']"
         position="attributes">
         <attribute name="domain">[('id','in', parent.allowed_product_ids)]</attribute>
       </xpath>
 
-      <!-- Dominio en el formulario embebido de la línea -->
+
       <xpath expr="//field[@name='order_line']/form//field[@name='product_id']"
         position="attributes">
         <attribute name="domain">[('id','in', parent.allowed_product_ids)]</attribute>
