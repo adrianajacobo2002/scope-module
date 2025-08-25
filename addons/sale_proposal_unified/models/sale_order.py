@@ -182,3 +182,33 @@ class SaleOrder(models.Model):
             "url": f"/web/content/{attach.id}?download=true",
             "target": "self",
         }
+        
+    def _get_scope_groups_standard(self):
+        self.ensure_one()
+        Scope = self.env["sale.module.scope"].sudo()
+        ordered_templates = []
+        seen = set()
+        
+        for line in self.order_line:
+            if line.product_id:
+                tmpl = line.product_id.product_tmpl_id
+                if tmpl.id not in seen:
+                    seen.add(tmpl.id)
+                    ordered_templates.append(tmpl)
+                    
+        if not ordered_templates:
+            return []
+        
+        tmpl_ids = [t.id for t in ordered_templates]
+        team = self.team_id
+        all_scopes = Scope.search([
+            ("active", "=", True),
+            ("team_ids", "in", team.id),
+            ("product_tmpl_id", "in", tmpl_ids),
+        ])
+        
+        groups = []
+        for tmpl in ordered_templates:
+            scopes_for_tmpl = all_scopes.filtered(lambda s: s.product_tmpl_id.id == tmpl.id)
+            groups.append({"product": tmpl, "scopes": scopes_for_tmpl})
+        return groups

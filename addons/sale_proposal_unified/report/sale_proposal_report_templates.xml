@@ -3,53 +3,59 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
-                    <div class="page">
+                    <style type="text/css">
+                        .header [name="company_address"] { display: none !important; }
+                    </style>
 
-                        <t
-                            t-if="doc.team_id.company_source == 'html' and doc.team_id.company_info_template">
-                            <div t-raw="doc.team_id.company_info_template" />
-                        </t>
+                    <!--inf.
+                    empresa-->
+                    <t
+                        t-if="doc.team_id.company_source == 'html' and doc.team_id.company_info_template">
+                        <div class="page">
+                            <div class="rt-content" t-raw="doc.team_id.company_info_template" />
+                        </div>
+                    </t>
 
+                    <!--inf.
+                    servicio-->
+                    <t
+                        t-if="doc.team_id.service_source == 'html' and doc.team_id.service_info_template">
+                        <div class="page" style="page-break-before: always;">
+                            <div class="rt-content" t-raw="doc.team_id.service_info_template" />
+                        </div>
+                    </t>
 
-                        <t
-                            t-if="doc.team_id.service_source == 'html' and doc.team_id.service_info_template">
-                            <div t-raw="doc.team_id.service_info_template" />
-                        </t>
-
-                        <t t-foreach="doc.order_line" t-as="line">
-                            <t t-set="tmpl_id" t-value="line.product_id.product_tmpl_id.id" />
-                            <t t-set="scope_team"
-                                t-value="env['sale.module.scope'].search([
-                               ('product_tmpl_id','=',tmpl_id),
-                               ('active','=',True),
-                               ('team_ids','in', doc.team_id.id)
-                             ], limit=1)" />
-                            <t t-if="scope_team">
-                                <h3>
-                                    <t t-esc="scope_team.name" />
-                                    <small style="font-weight: normal; color:#666;"> <span t-translate="yes">– Equipo:</span> <t
-                                            t-esc="doc.team_id.name" />
-                                    </small>
-                                </h3>
-                                <div t-raw="scope_team.description_html" />
-                            </t>
-                            <t t-else="">
-                                <t t-if="line.custom_scope_html">
-                                    <h3 t-translate="yes">
-                                        <t t-esc="line.name" />
-                                    </h3>
-                                    <div t-raw="line.custom_scope_html" />
+                    <!--alcances-->
+                    <t t-set="groups" t-value="doc._get_scope_groups_standard()" />
+                    <t t-if="groups">
+                        <div class="page" style="page-break-before: always;">
+                            <h2>Alcance técnico</h2>
+                            <t t-foreach="groups" t-as="g">
+                                <t t-if="g['scopes']">
+                                    <div style="margin-bottom:14px; page-break-inside: avoid;">
+                                        <h3 style="margin:14px 0 6px 0;">
+                                            <t t-esc="g['product'].display_name" />
+                                            <small style="font-weight:normal;color:#666;"> – Equipo: <t
+                                                    t-esc="doc.team_id.name" />
+                                            </small>
+                                        </h3>
+                                        <t t-foreach="g['scopes']" t-as="s">
+                                            <h4 style="margin:8px 0 4px 0;">
+                                                <t t-esc="s.name" />
+                                            </h4>
+                                            <div class="rt-content" t-raw="s.description_html" />
+                                        </t>
+                                    </div>
                                 </t>
                             </t>
-                        </t>
+                        </div>
+                    </t>
 
-                        <t t-if="doc.extra_scope_html">
-                            <h3>Alcance adicional</h3>
-                            <div t-raw="doc.extra_scope_html" />
-                        </t>
 
+                    <!--cotizacion-->
+                    <div class="page" style="page-break-before: always;">
                         <h3>Propuesta Económica</h3>
-                        <table class="table table-sm o_main_table">
+                        <table class="table table-sm o_main_table" style="page-break-inside: avoid;">
                             <thead>
                                 <tr>
                                     <th>Descripción</th>
@@ -99,7 +105,17 @@
                                 </tr>
                             </tfoot>
                         </table>
+
                     </div>
+                    <!--extra-->
+
+                    <t t-if="doc.extra_scope_html">
+                        <div class="page" style="page-break-before: always;">
+                            <h3>Alcance adicional</h3>
+                            <div class="rt-content" t-raw="doc.extra_scope_html" />
+                        </div>
+                    </t>
+
                 </t>
             </t>
         </t>

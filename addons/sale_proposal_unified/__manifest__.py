@@ -16,6 +16,7 @@
         "views/crm_team_views.xml",
         "views/sale_order_views.xml",
         "views/sale_order_team_visibility.xml",
+        "views/external_layout_cleanup.xml",
         "report/sale_proposal_report_templates.xml",
         "report/sale_proposal_report.xml",
         "data/mail_template_data.xml"
