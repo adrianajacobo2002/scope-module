@@ -11,15 +11,15 @@ class SaleOrder(models.Model):
         "product.product",
         string="Productos permitidos (derivados de scopes)",
         compute="_compute_allowed_products",
-        compute_sudo = True,
+        compute_sudo=True,
         help="Se calcula desde sale.module.scope activo para el equipo seleccionado.",
     )
 
     extra_scope_html = fields.Html(
         string="Alcance adicional (casos especiales)",
-        help="Se mostrará si se necesita complementar o no existe un alcance estándar."
+        help="Se mostrará si se necesita complementar o no existe un alcance estándar.",
     )
-    
+
     @api.depends("team_id")
     def _compute_allowed_products(self):
         Scope = self.env["sale.module.scope"].sudo()
@@ -53,14 +53,16 @@ class SaleOrder(models.Model):
             for l in bad_lines:
                 l.product_id = False
             return {
-                'warning': {
-                    'title': _('Productos no permitidos'),
-                    'message': _("Se limpiaron líneas incompatibles con el equipo '%s': %s")
-                               % (self.team_id.name, names)
+                "warning": {
+                    "title": _("Productos no permitidos"),
+                    "message": _(
+                        "Se limpiaron líneas incompatibles con el equipo '%s': %s"
+                    )
+                    % (self.team_id.name, names),
                 }
             }
-        
-    @api.constrains('team_id', 'order_line')
+
+    @api.constrains("team_id", "order_line")
     def _check_lines_match_team(self):
         for order in self:
             if not order.team_id:
@@ -70,37 +72,60 @@ class SaleOrder(models.Model):
                 lambda l: l.product_id and l.product_id not in order.allowed_product_ids
             )
             if bad:
-                names = ', '.join(bad.mapped('product_id.display_name'))
-                raise UserError(_("Los siguientes productos no pertenecen al equipo '%s': %s") %
-                                (order.team_id.name, names)) 
-            
+                names = ", ".join(bad.mapped("product_id.display_name"))
+                raise UserError(
+                    _("Los siguientes productos no pertenecen al equipo '%s': %s")
+                    % (order.team_id.name, names)
+                )
 
     def _render_proposal_pdf(self):
         self.ensure_one()
 
-        pdf_main, _ = (
-            self.env["ir.actions.report"]
-            .sudo()
-            ._render_qweb_pdf(
-                "sale_proposal_unified.report_sale_proposal_unified_document",
-                [self.id],
-            )
-        )
+        report_service = self.env["ir.actions.report"].sudo()
+
+        parts = []
 
         team = self.team_id
-        parts = []
-        
+
         if getattr(team, "use_base_pdf", False) and team.base_pdf:
             parts.append(b64decode(team.base_pdf))
-        
-        if team.company_source == 'pdf' and team.company_info_pdf:
+
+        if team.company_source == "pdf" and team.company_info_pdf:
             parts.append(b64decode(team.company_info_pdf))
-            
-        if team.service_source == 'pdf' and team.service_info_pdf:
+
+        if team.service_source == "pdf" and team.service_info_pdf:
             parts.append(b64decode(team.service_info_pdf))
-            
-        parts.append(pdf_main)
-        
+
+        extra_action = self.env.ref(
+            "sale_proposal_unified.report_sale_proposal_unified_action",
+            raise_if_not_found=False,
+        )
+        if extra_action and extra_action.report_name:
+            extra_pdf, _ = report_service._render_qweb_pdf(
+                extra_action.report_name, [self.id]
+            )
+        else:
+            extra_pdf, _ = report_service._render_qweb_pdf(
+                "sale_proposal_unified.report_sale_proposal_extra_pages",
+                [self.id],
+            )
+        if extra_pdf:
+            parts.append(extra_pdf)
+
+        sale_action = self.env.ref(
+            "sale.action_report_saleorder", raise_if_not_found=False
+        )
+        if sale_action and sale_action.report_name:
+            std_pdf, _ = report_service._render_qweb_pdf(
+                sale_action.report_name, [self.id]
+            )
+        else:
+            std_pdf, _ = report_service._render_qweb_pdf(
+                "sale.report_saleorder", [self.id]
+            )
+        if std_pdf:
+            parts.append(std_pdf)
+
         merged = pdf_utils.merge_pdf(parts)
         return merged
 
@@ -109,20 +134,8 @@ class SaleOrder(models.Model):
         self.ensure_one()
 
         if self.team_id and self.team_id.incluir_propuesta_tecnica:
-            template = self.env.ref(
-                "sale_proposal_unified.mail_template_sale_proposal_unified",
-                raise_if_not_found=False,
-            )
             ctx = dict(action.get("context", {}))
-            if template:
-                ctx.update(
-                    {
-                        "default_use_template": True,
-                        "default_template_id": template.id,
-                        "custom_layout": "mail.mail_notification_light",
-                    }
-                )
-
+            
             pdf_bytes = self._render_proposal_pdf()
             if pdf_bytes:
                 filename = f"Propuesta_{self.name.replace('/', '_')}.pdf"
@@ -182,33 +195,37 @@ class SaleOrder(models.Model):
             "url": f"/web/content/{attach.id}?download=true",
             "target": "self",
         }
-        
+
     def _get_scope_groups_standard(self):
         self.ensure_one()
         Scope = self.env["sale.module.scope"].sudo()
         ordered_templates = []
         seen = set()
-        
+
         for line in self.order_line:
             if line.product_id:
                 tmpl = line.product_id.product_tmpl_id
                 if tmpl.id not in seen:
                     seen.add(tmpl.id)
                     ordered_templates.append(tmpl)
-                    
+
         if not ordered_templates:
             return []
-        
+
         tmpl_ids = [t.id for t in ordered_templates]
         team = self.team_id
-        all_scopes = Scope.search([
-            ("active", "=", True),
-            ("team_ids", "in", team.id),
-            ("product_tmpl_id", "in", tmpl_ids),
-        ])
-        
+        all_scopes = Scope.search(
+            [
+                ("active", "=", True),
+                ("team_ids", "in", team.id),
+                ("product_tmpl_id", "in", tmpl_ids),
+            ]
+        )
+
         groups = []
         for tmpl in ordered_templates:
-            scopes_for_tmpl = all_scopes.filtered(lambda s: s.product_tmpl_id.id == tmpl.id)
+            scopes_for_tmpl = all_scopes.filtered(
+                lambda s: s.product_tmpl_id.id == tmpl.id
+            )
             groups.append({"product": tmpl, "scopes": scopes_for_tmpl})
         return groups
