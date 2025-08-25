@@ -4,13 +4,13 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     
-
                     <!--inf.
                     empresa-->
                     <t
                         t-if="doc.team_id.company_source == 'html' and doc.team_id.company_info_template">
                         <div class="page">
-                            <div class="rt-content" t-raw="doc.team_id.company_info_template" />
+                            <h2>Informacion de la Empresa</h2>
+                            <div t-raw="doc.team_id.company_info_template" />
                         </div>
                     </t>
 
@@ -18,7 +18,8 @@
                     servicio-->
                     <t
                         t-if="doc.team_id.service_source == 'html' and doc.team_id.service_info_template">
-                        <div class="page" style="page-break-before: always;">
+                        <div class="page">
+                            <h2>Informacion del Servicio</h2>
                             <div class="rt-content" t-raw="doc.team_id.service_info_template" />
                         </div>
                     </t>
@@ -31,15 +32,15 @@
                             <t t-foreach="groups" t-as="g">
                                 <t t-if="g['scopes']">
                                     <div style="margin-bottom:14px; page-break-inside: avoid;">
-                                        <h3 style="margin:14px 0 6px 0;">
+                                        <h4 style="margin:14px 0 6px 0;">
                                             <t t-esc="g['product'].display_name" />
                                             <small style="font-weight:normal;color:#666;"> – Equipo: <t
                                                     t-esc="doc.team_id.name" />
                                             </small>
-                                        </h3>
+                                        </h4>
                                         <t t-foreach="g['scopes']" t-as="s">
                                             <h4 style="margin:8px 0 4px 0;">
-                                                <t t-esc="s.name" />
+                                                Producto: <t t-esc="s.name" />
                                             </h4>
                                             <div class="rt-content" t-raw="s.description_html" />
                                         </t>
@@ -53,11 +54,10 @@
 
                     <t t-if="doc.extra_scope_html">
                         <div class="page" style="page-break-before: always;">
-                            <h3>Alcance adicional</h3>
+                            <h2>Alcance adicional</h2>
                             <div class="rt-content" t-raw="doc.extra_scope_html" />
                         </div>
                     </t>
-
                 </t>
             </t>
         </t>

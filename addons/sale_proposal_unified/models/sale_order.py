@@ -87,7 +87,7 @@ class SaleOrder(models.Model):
 
         team = self.team_id
 
-        if getattr(team, "use_base_pdf", False) and team.base_pdf:
+        if team.base_pdf:
             parts.append(b64decode(team.base_pdf))
 
         if team.company_source == "pdf" and team.company_info_pdf:

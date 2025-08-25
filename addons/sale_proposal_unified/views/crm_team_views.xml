@@ -16,8 +16,8 @@
                     modifiers="{'invisible': [['incluir_propuesta_tecnica','=',False]]}">
 
                     <group string="Portada PDF">
-                        <label for="base_pdf" string="Portada PDF"/>
-                        <field name="base_pdf" filename="base_pdf_filename" nolabel="1"/>
+                        <label for="base_pdf" string="Portada PDF" />
+                        <field name="base_pdf" filename="base_pdf_filename" nolabel="1" />
                         <field name="base_pdf_filename" invisible="1" />
                     </group>
 
@@ -27,7 +27,8 @@
                         </group>
 
                         <group modifiers="{'invisible': [['company_source','!=','html']]}">
-                            <label for="company_info_template" string="Información General de la Empresa" />
+                            <label for="company_info_template"
+                                string="Información General de la Empresa" />
                             <field name="company_info_template" nolabel="1" />
                         </group>
 
