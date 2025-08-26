@@ -1,0 +1,65 @@
+<odoo>
+    <!-- Acción modal (si la usas en los botones) -->
+    <record id="action_proposal_asset_new" model="ir.actions.act_window">
+        <field name="name">Agregar PDF</field>
+        <field name="res_model">sale.proposal.asset</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- KANBAN con el template requerido 'kanban-box' -->
+    <record id="view_proposal_asset_kanban" model="ir.ui.view">
+        <field name="name">sale.proposal.asset.kanban</field>
+        <field name="model">sale.proposal.asset</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="type" class="o_kanban_small_column">
+                <templates>
+                    <!-- requerido por Odoo -->
+                    <t t-name="kanban-box">
+                        <div class="o_kanban_record oe_kanban_global_click">
+                            <div class="o_kanban_primary_left">
+                                <i class="fa fa-file-pdf-o fa-2x" />
+                            </div>
+                            <div class="o_kanban_primary_right">
+                                <strong t-esc="record.name.value" />
+                                <div class="text-muted">Document type: <t t-esc="record.type.value" /></div>
+                                <div class="mt-2">
+                                    <a
+                                        t-att-href="'/web/content/sale.proposal.asset/%s/file/%s?download=1' % (record.id.raw_value, record.filename.value or (record.name.value + '.pdf'))"
+                                        class="btn btn-link btn-sm"><i class="fa fa-download" />
+                                        Descargar</a>
+                                    <a type="edit" class="btn btn-link btn-sm"><i
+                                            class="fa fa-pencil" /> Editar</a>
+                                    <a type="delete" class="btn btn-link btn-sm text-danger"><i
+                                            class="fa fa-trash" /> Eliminar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- opcional: tarjeta de quick-create -->
+                    <t t-name="kanban-box-quick-create">
+                        <div class="o_kanban_record o_kanban_add">
+                            <i class="fa fa-plus-square fa-2x mr-2" />
+                            <div>
+                                <strong>Add Headers and footers</strong>
+                                <div class="btn-group mt-2">
+                                    <button type="action" class="btn btn-secondary"
+                                        name="%(sale_proposal_unified.action_proposal_asset_new)d"
+                                        context="{'default_team_id': active_id, 'default_type':'header', 'default_name':'Header'}">
+                                        Add Header
+                                    </button>
+                                    <button type="action" class="btn btn-secondary"
+                                        name="%(sale_proposal_unified.action_proposal_asset_new)d"
+                                        context="{'default_team_id': active_id, 'default_type':'footer', 'default_name':'Footer'}">
+                                        Add Footer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

@@ -1,68 +1,35 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
+
 class CrmTeam(models.Model):
     _inherit = "crm.team"
 
     incluir_propuesta_tecnica = fields.Boolean(string="Incluir propuesta técnica")
-    
-    company_source = fields.Selection(
-        [('html', 'HTML en Odoo'), ('pdf', 'PDF subido')],
-        string="Fuente Info. Empresa",
-        default='html',
-        required=True
-    )
-    
-    company_info_template = fields.Html(string="Información de la empresa (HTML)", translate=True)
-    company_info_pdf = fields.Binary(string="Información de la empresa (PDF)")
-    company_info_pdf_filename = fields.Char(string="Nombre del PDF (empresa)")
-    
-    service_source = fields.Selection(
-        [('html', 'HTML en Odoo'), ('pdf', 'PDF subido')],
-        string = "Fuente Info. Servicio",
-        default = 'html',
-        required=True
-    )
-    
-    service_info_template = fields.Html(string="Información del servicio (HTML)",  translate=True)
-    service_info_pdf = fields.Binary(string="Información del servicio (PDF)")
-    service_info_pdf_filename = fields.Char(string="Nombre del PDF (servicio)")
-    
-    base_pdf = fields.Binary("Plantilla base (PDF)")
-    base_pdf_filename = fields.Char("Nombre de archivo PDF")
-    
-    @api.onchange('company_source')
-    def _onchange_company_source(self):
-        if self.company_source == 'html':
-            self.company_info_pdf = False
-            self.company_info_pdf_filename = False
-        elif self.company_source == 'pdf':
-            self.company_info_template = False
 
-    @api.onchange('service_source')
-    def _onchange_service_source(self):
-        if self.service_source == 'html':
-            self.service_info_pdf = False
-            self.service_info_pdf_filename = False
-        elif self.service_source == 'pdf':
-            self.service_info_template = False
-            
-    @api.constrains(
-        'incluir_propuesta_tecnica',
-        'company_source', 'company_info_template', 'company_info_pdf',
-        'service_source', 'service_info_template', 'service_info_pdf'
+    proposal_header_pdf = fields.Binary(string="Header")
+    proposal_header_pdf_filename = fields.Char(string="Nombre Header PDF")
+    proposal_footer_pdf = fields.Binary(string="Footer")
+    proposal_footer_pdf_filename = fields.Char(string="Nombre Footer PDF")
+
+    proposal_asset_ids = fields.One2many(
+        "sale.proposal.asset",
+        "team_id",
+        string="Docs Propuesta",
     )
-    def _check_team_proposal_sources(self):
+
+    @api.constrains("incluir_propuesta_tecnica")
+    def _check_min_pdfs(self):
         for team in self:
             if not team.incluir_propuesta_tecnica:
                 continue
-
-            if team.company_source == 'html' and not (team.company_info_template or '').strip():
-                raise ValidationError(_("Debe completar la 'Información de la empresa (HTML)' o cambiar la fuente a PDF."))
-            if team.company_source == 'pdf' and not team.company_info_pdf:
-                raise ValidationError(_("Debe adjuntar el PDF de 'Información de la empresa'."))
-
-            if team.service_source == 'html' and not (team.service_info_template or '').strip():
-                raise ValidationError(_("Debe completar la 'Información del servicio (HTML)' o cambiar la fuente a PDF."))
-            if team.service_source == 'pdf' and not team.service_info_pdf:
-                raise ValidationError(_("Debe adjuntar el PDF de 'Información del servicio'."))
+            has_header = bool(
+                team.proposal_asset_ids.filtered(lambda r: r.type == "header")
+            ) or bool(team.proposal_header_pdf)
+            has_footer = bool(
+                team.proposal_asset_ids.filtered(lambda r: r.type == "footer")
+            ) or bool(team.proposal_footer_pdf)
+            if not has_header:
+                raise ValidationError(_("Debe adjuntar el Header (PDF)."))
+            if not has_footer:
+                raise ValidationError(_("Debe adjuntar el Footer (PDF)."))

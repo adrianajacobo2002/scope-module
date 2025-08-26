@@ -1,28 +1,14 @@
 <odoo>
     <template id="report_sale_proposal_extra_pages">
         <t t-call="web.html_container">
+            <style>
+                @page {
+                size: Letter;
+                margin: 20mm;
+                }
+            </style>
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
-                    
-                    <!--inf.
-                    empresa-->
-                    <t
-                        t-if="doc.team_id.company_source == 'html' and doc.team_id.company_info_template">
-                        <div class="page">
-                            <h2>Informacion de la Empresa</h2>
-                            <div t-raw="doc.team_id.company_info_template" />
-                        </div>
-                    </t>
-
-                    <!--inf.
-                    servicio-->
-                    <t
-                        t-if="doc.team_id.service_source == 'html' and doc.team_id.service_info_template">
-                        <div class="page">
-                            <h2>Informacion del Servicio</h2>
-                            <div class="rt-content" t-raw="doc.team_id.service_info_template" />
-                        </div>
-                    </t>
 
                     <!--alcances-->
                     <t t-set="groups" t-value="doc._get_scope_groups_standard()" />

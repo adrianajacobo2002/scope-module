@@ -13,6 +13,7 @@
         "sale_scope_library"
     ],
     "data": [
+        "views/proposal_asset_views.xml",
         "views/crm_team_views.xml",
         "views/sale_order_views.xml",
         "views/sale_order_team_visibility.xml",

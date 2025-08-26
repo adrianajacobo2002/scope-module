@@ -23,9 +23,12 @@ class SaleOrder(models.Model):
     @api.depends("team_id")
     def _compute_allowed_products(self):
         Scope = self.env["sale.module.scope"].sudo()
+        Product = self.env["product.product"].sudo()
+
         for order in self:
-            if not order.team_id:
-                order.allowed_product_ids = [(5, 0, 0)]
+            if not order.team_id or not order.team_id.incluir_propuesta_tecnica:
+                all_saleable = Product.search([("sale_ok", "=", True)])
+                order.allowed_product_ids = [(6, 0, all_saleable.ids)]
                 continue
             scopes = Scope.search(
                 [
@@ -43,6 +46,11 @@ class SaleOrder(models.Model):
         self.ensure_one()
         if not self.team_id:
             return
+
+        if not self.team_id.incluir_propuesta_tecnica:
+            self._compute_allowed_products()
+            return
+
         self._compute_allowed_products()
         bad_lines = self.order_line.filtered(
             lambda l: l.product_id
@@ -65,7 +73,7 @@ class SaleOrder(models.Model):
     @api.constrains("team_id", "order_line")
     def _check_lines_match_team(self):
         for order in self:
-            if not order.team_id:
+            if not order.team_id or not order.team_id.incluir_propuesta_tecnica:
                 continue
             order._compute_allowed_products()
             bad = order.order_line.filtered(
@@ -82,35 +90,32 @@ class SaleOrder(models.Model):
         self.ensure_one()
 
         report_service = self.env["ir.actions.report"].sudo()
-
+        team = self.team_id
         parts = []
 
-        team = self.team_id
-
-        if team.base_pdf:
-            parts.append(b64decode(team.base_pdf))
-
-        if team.company_source == "pdf" and team.company_info_pdf:
-            parts.append(b64decode(team.company_info_pdf))
-
-        if team.service_source == "pdf" and team.service_info_pdf:
-            parts.append(b64decode(team.service_info_pdf))
-
+        header = team.proposal_asset_ids.filtered(lambda r: r.type == "header")[:1]
+        if header:
+            from base64 import b64decode
+            parts.append(b64decode(header.file))
+        elif team.proposal_header_pdf:
+            parts.append(b64decode(team.proposal_header_pdf))
+        
         extra_action = self.env.ref(
             "sale_proposal_unified.report_sale_proposal_unified_action",
             raise_if_not_found=False,
         )
+
         if extra_action and extra_action.report_name:
-            extra_pdf, _ = report_service._render_qweb_pdf(
+            tech_pdf, _ = report_service._render_qweb_pdf(
                 extra_action.report_name, [self.id]
             )
         else:
-            extra_pdf, _ = report_service._render_qweb_pdf(
-                "sale_proposal_unified.report_sale_proposal_extra_pages",
-                [self.id],
+            tech_pdf, _ = report_service._render_qweb_pdf(
+                "sale_proposal_unified.report_sale_proposal_extra_pages", [self.id]
             )
-        if extra_pdf:
-            parts.append(extra_pdf)
+
+        if tech_pdf:
+            parts.append(tech_pdf)
 
         sale_action = self.env.ref(
             "sale.action_report_saleorder", raise_if_not_found=False
@@ -125,9 +130,14 @@ class SaleOrder(models.Model):
             )
         if std_pdf:
             parts.append(std_pdf)
+            
+        footer_asset = team.proposal_asset_ids.filtered(lambda r: r.type == "footer")[:1]
+        if footer_asset:
+            parts.append(b64decode(footer_asset.file))
+        elif team.proposal_footer_pdf:
+            parts.append(b64decode(team.proposal_footer_pdf))
 
-        merged = pdf_utils.merge_pdf(parts)
-        return merged
+        return pdf_utils.merge_pdf(parts) if parts else b""
 
     def action_quotation_send(self):
         action = super().action_quotation_send()
@@ -135,7 +145,7 @@ class SaleOrder(models.Model):
 
         if self.team_id and self.team_id.incluir_propuesta_tecnica:
             ctx = dict(action.get("context", {}))
-            
+
             pdf_bytes = self._render_proposal_pdf()
             if pdf_bytes:
                 filename = f"Propuesta_{self.name.replace('/', '_')}.pdf"

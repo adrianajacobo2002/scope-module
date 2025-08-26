@@ -9,58 +9,33 @@
                     <field name="incluir_propuesta_tecnica" class="o_highlight" />
                 </group>
             </xpath>
-            <notebook position="inside">
-                <field name="incluir_propuesta_tecnica" invisible="1" />
-
+            <xpath expr="//notebook" position="inside">
                 <page string="Propuesta técnica"
-                    modifiers="{'invisible': [['incluir_propuesta_tecnica','=',False]]}">
+                    modifiers="{'invisible': [['incluir_propuesta_tecnica','=', False]]}">
 
-                    <group string="Portada PDF">
-                        <label for="base_pdf" string="Portada PDF" />
-                        <field name="base_pdf" filename="base_pdf_filename" nolabel="1" />
-                        <field name="base_pdf_filename" invisible="1" />
-                    </group>
+                    <div class="mb-2">
+                        <span class="o_form_label">Add headers and footers</span>
+                        <div class="btn-group">
+                            <button type="action" class="btn btn-primary"
+                                name="%(sale_proposal_unified.action_proposal_asset_new)d"
+                                context="{'default_team_id': active_id, 'default_type':'header', 'default_name':'Header'}">
+                                Add Header
+                            </button>
+                            <button type="action" class="btn btn-secondary"
+                                name="%(sale_proposal_unified.action_proposal_asset_new)d"
+                                context="{'default_team_id': active_id, 'default_type':'footer', 'default_name':'Footer'}">
+                                Add Footer
+                            </button>
+                        </div>
+                    </div>
 
-                    <group string="Información de la empresa">
-                        <group>
-                            <field name="company_source" />
-                        </group>
 
-                        <group modifiers="{'invisible': [['company_source','!=','html']]}">
-                            <label for="company_info_template"
-                                string="Información General de la Empresa" />
-                            <field name="company_info_template" nolabel="1" />
-                        </group>
-
-                        <group modifiers="{'invisible': [['company_source','!=','pdf']]}">
-                            <label for="company_info_pdf" string="PDF Información Empresa" />
-                            <field name="company_info_pdf" filename="company_info_pdf_filename"
-                                nolabel="1" />
-                            <field name="company_info_pdf_filename" invisible="1" />
-                        </group>
-                    </group>
-
-                    <group string="Información del servicio">
-                        <group>
-                            <field name="service_source" />
-                        </group>
-
-                        <group modifiers="{'invisible': [['service_source','!=','html']]}">
-                            <label for="service_info_template" string="Información del Servicio" />
-                            <field name="service_info_template" nolabel="1" />
-                        </group>
-
-                        <group modifiers="{'invisible': [['service_source','!=','pdf']]}">
-                            <label for="service_info_pdf" string="PDF Información Servicio" />
-                            <field name="service_info_pdf" filename="service_info_pdf_filename"
-                                nolabel="1" />
-                            <field name="service_info_pdf_filename" invisible="1" />
-                        </group>
-                    </group>
-
+                    <field name="proposal_asset_ids"
+                        widget="kanban"
+                        context="{'default_team_id': active_id}" />
 
                 </page>
-            </notebook>
+            </xpath>
         </field>
     </record>
 </odoo>
