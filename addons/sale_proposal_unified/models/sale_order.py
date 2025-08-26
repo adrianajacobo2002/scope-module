@@ -90,14 +90,19 @@ class SaleOrder(models.Model):
         self.ensure_one()
 
         report_service = self.env["ir.actions.report"].sudo()
-        team = self.team_id
+        team = self.team_id.sudo()
+        
+        if not team or not team.incluir_propuesta_tecnica:
+            sale_action = self.env.ref("sale.action_report_saleorder", raise_if_not_found=False)
+            if sale_action and sale_action.report_name:
+                std_pdf, _ = report_service._render_qweb_pdf(sale_action.report_name, [self.id])
+            else:
+                std_pdf, _ = report_service._render_qweb_pdf("sale.report_saleorder", [self.id])
+            return std_pdf or b""
+        
         parts = []
 
-        header = team.proposal_asset_ids.filtered(lambda r: r.type == "header")[:1]
-        if header:
-            from base64 import b64decode
-            parts.append(b64decode(header.file))
-        elif team.proposal_header_pdf:
+        if team.proposal_header_pdf:
             parts.append(b64decode(team.proposal_header_pdf))
         
         extra_action = self.env.ref(
@@ -131,10 +136,7 @@ class SaleOrder(models.Model):
         if std_pdf:
             parts.append(std_pdf)
             
-        footer_asset = team.proposal_asset_ids.filtered(lambda r: r.type == "footer")[:1]
-        if footer_asset:
-            parts.append(b64decode(footer_asset.file))
-        elif team.proposal_footer_pdf:
+        if team.proposal_footer_pdf:
             parts.append(b64decode(team.proposal_footer_pdf))
 
         return pdf_utils.merge_pdf(parts) if parts else b""

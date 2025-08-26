@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_proposal_asset_manager,sale.proposal.asset manager,model_sale_proposal_asset,sale_scope_library.group_proposal_manager,1,1,1,1
+access_proposal_asset_user,sale.proposal.asset user,model_sale_proposal_asset,sale_scope_library.group_proposal_user,1,1,1,0

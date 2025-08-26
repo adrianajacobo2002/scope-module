@@ -13,7 +13,7 @@
                     <!--alcances-->
                     <t t-set="groups" t-value="doc._get_scope_groups_standard()" />
                     <t t-if="groups">
-                        <div class="page" style="page-break-before: always;">
+                        <div class="page">
                             <h2>Alcance técnico</h2>
                             <t t-foreach="groups" t-as="g">
                                 <t t-if="g['scopes']">
@@ -25,9 +25,6 @@
                                             </small>
                                         </h4>
                                         <t t-foreach="g['scopes']" t-as="s">
-                                            <h4 style="margin:8px 0 4px 0;">
-                                                Producto: <t t-esc="s.name" />
-                                            </h4>
                                             <div class="rt-content" t-raw="s.description_html" />
                                         </t>
                                     </div>
