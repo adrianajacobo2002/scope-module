@@ -22,4 +22,9 @@
     ],
     "installable": True,
     "application": True,
+    'assets': {
+        'web.report_assets_common': [
+            'sale_proposal_unified/static/src/css/report_proposal.css',
+        ],
+    }
 }

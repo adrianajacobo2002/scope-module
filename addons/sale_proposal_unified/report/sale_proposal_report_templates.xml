@@ -4,111 +4,34 @@
 
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
-                    <style>
-                        @page { size: Letter; margin: 18mm; }
-
-                        #wrapwrap.section-title{
-                            text-align:center;
-                            font-weight:700;
-                            color:#203048;
-                            font-size:18pt !important; 
-                            margin-bottom:18px;
-                            border-bottom:2px solid #e6e9ef;
-                            padding-bottom:8px;
-                        }
-
-                        #wrapwrap .section-sep{
-                            border-bottom: 2px solid #e6e9ef;
-                            margin: 6px 0 18px 0;
-                        }
-
-                        #wrapwrap .scope-block{
-                            border:1px solid #e6e9ef;
-                            border-radius:6px;
-                            padding:10px 12px;
-                            margin:10px 0 16px 0;
-                            page-break-inside:avoid;
-                            background:#fff;
-                        }
-
-                        #wrapwrap table.scope-header{ 
-                            width:100%; border-collapse:collapse; 
-                            table-layout:fixed; 
-                            margin:0 0 6px 0; 
-                        }
-                        #wrapwrap table.scope-header td{ 
-                            vertical-align:top;
-                        }
-                        #wrapwrap td.icon-cell{ 
-                            width:18px; 
-                        }
-                        #wrapwrap img.icon-img{ 
-                            width:14px; 
-                            height:14px; 
-                            object-fit:contain; 
-                            border-radius:2px; 
-                            display:block; 
-                            margin-top:2px; 
-                        }
-                        #wrapwrap span.fallback-bullet{ 
-                            width:10px; 
-                            height:10px; 
-                            border-radius:50%; 
-                            background:#444; 
-                            display:inline-block; 
-                            margin-top:4px; 
-                        }
-
-                        #wrapwrap .title-text .top{ font-weight:700; color:#203048; font-size:12pt; line-height:1.15; }
-                        #wrapwrap .title-text .sub{ font-size:9.5pt; color:#666; }
-                        #wrapwrap .rt-content{ margin-top:5px; }
-                        #wrapwrap .page-break{ page-break-before: always; }
-                    </style>
-
                     <!--alcances-->
                     <t t-set="groups" t-value="doc._get_scope_groups_standard()" />
                     <t t-if="groups">
                         <div class="page">
-                            <div class="section-title" style="font-size: 30px !important;">
+                            <div class="section-title">
                                 Alcance técnico del proyecto ofertado
                             </div>
-                            <div class="section-sep"></div>
-
+                            
                             <t t-foreach="groups" t-as="g">
                                 <t t-if="g['scopes']">
+
                                     <t t-foreach="g['scopes']" t-as="s">
-                                        <div class="scope-block">
-                                            <table class="scope-header">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="icon-cell">
-                                                            <t t-if="s.icon_image">
-                                                                <img class="icon-img"
-                                                                    t-att-src="'/web/image/sale.module.scope/%s/icon_image?unique=%s&amp;width=64&amp;height=64' % (s.id, (s.write_date or s.create_date or '0'))" />
-                                                            </t>
-                                                            <t t-else="">
-                                                                <span class="fallback-bullet"></span>
-                                                            </t>
-                                                        </td>
-                                                        <td>
-                                                            <div class="title-text">
-                                                                <div class="top">
-                                                                    <t t-esc="s.name" />
-                                                                </div>
-                                                                <div class="sub"> Producto: <t
-                                                                        t-esc="g['product'].display_name" />
-                                                                <br />
-                                                                    Línea de Negocios Encargada: <t
-                                                                        t-esc="doc.team_id.name" />
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                                
-                                            </table>
-                                            <div class="rt-content" t-raw="s.description_html" />
+                                        <div>
+                                            <t t-if="s.icon_image">
+                                                <img class="icon-img"
+                                                    t-att-src="'/web/image/sale.module.scope/%s/icon_image?unique=%s&amp;width=64&amp;height=64' % (s.id, (s.write_date or s.create_date or '0'))"
+                                                    style="display:inline-block; vertical-align:middle; max-width:64px; max-height:64px; margin:0;"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="fallback-bullet" style="display:inline-block; vertical-align:middle;"></span>
+                                            </t>
+                                            <span style="display:inline-block; vertical-align:middle; font-size:18pt; font-weight:700; margin-right:8px;">
+                                                <t t-esc="s.name"/>
+                                            </span>
+
                                         </div>
+                                        <hr />
+                                        <div class="rt-content" t-raw="s.description_html" />
                                     </t>
                                 </t>
                             </t>

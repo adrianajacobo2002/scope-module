@@ -1,0 +1,55 @@
+@page {
+  size: Letter;
+  margin-top: 15mm;
+  margin-bottom: 15mm;
+  margin-left: 12mm;
+  margin-right: 12mm;
+}
+
+.section-title {
+  text-align: center;
+  font-weight: 700;
+  color: #011e41;
+  font-size: 18pt !important;
+  margin-bottom: 18px;
+  padding-bottom: 8px;
+}
+
+.scope-block {
+  border: 1px solid #e6e9ef;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin: 10px 0 16px 0;
+  page-break-inside: avoid;
+  background: #fff;
+}
+
+img.icon-img {
+  width: 50px;
+  height: 50px;
+}
+span.fallback-bullet {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #444;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.title-text .top {
+  font-weight: 700;
+  color: #203048;
+  font-size: 12pt;
+  line-height: 1.15;
+}
+.title-text .sub {
+  font-size: 9.5pt;
+  color: #011e41;
+}
+.rt-content {
+  margin-top: 5px;
+}
+.page-break {
+  page-break-before: always;
+}
