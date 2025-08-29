@@ -22,7 +22,6 @@
                         <field name="name" />
                         <field name="product_tmpl_id" />
                         <field name="team_ids" widget="many2many_tags" />
-                        <field name="icon_image" widget="image" class="oe_avatar"/>
                         <field name="active" />
                     </group>
                     <notebook>

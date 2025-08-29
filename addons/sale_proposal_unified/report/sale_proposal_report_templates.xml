@@ -17,10 +17,11 @@
 
                                     <t t-foreach="g['scopes']" t-as="s">
                                         <div>
-                                            <t t-if="s.icon_image">
+                                            <t t-if="s.product_tmpl_id and s.product_tmpl_id.image_1920">
                                                 <img class="icon-img"
-                                                    t-att-src="'/web/image/sale.module.scope/%s/icon_image?unique=%s&amp;width=64&amp;height=64' % (s.id, (s.write_date or s.create_date or '0'))"
-                                                    style="display:inline-block; vertical-align:middle; max-width:64px; max-height:64px; margin:0;"/>
+                                                    t-att-src="'/web/image/product.template/%s/image_1920?unique=%s&amp;width=64&amp;height=64' % (s.product_tmpl_id.id, (s.product_tmpl_id.write_date or s.product_tmpl_id.create_date or '0'))"
+                                                    alt="Imagen del producto"
+                                                    style="display:inline-block; vertical-align:middle; max-width:64px; max-height:64px; margin:0;" />
                                             </t>
                                             <t t-else="">
                                                 <span class="fallback-bullet" style="display:inline-block; vertical-align:middle;"></span>

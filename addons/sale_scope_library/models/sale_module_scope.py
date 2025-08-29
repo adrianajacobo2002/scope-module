@@ -21,10 +21,6 @@ class SaleModuleScope(models.Model):
         string="Equipos de venta",
     )
     description_html = fields.Html(string="Alcance (HTML)")
-    
-    icon_image = fields.Image(
-        string="Ícono del alcance", max_width=64, max_height=64,
-        help="icono alcance pdf"
-    )
+
     active = fields.Boolean(default=True)
 
