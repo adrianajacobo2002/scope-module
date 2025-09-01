@@ -1,11 +1,3 @@
-@page {
-  size: Letter;
-  margin-top: 15mm;
-  margin-bottom: 15mm;
-  margin-left: 12mm;
-  margin-right: 12mm;
-}
-
 .section-title {
   text-align: center;
   font-weight: 700;

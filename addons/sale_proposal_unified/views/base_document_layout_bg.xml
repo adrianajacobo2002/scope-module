@@ -1,0 +1,31 @@
+<odoo>
+    <data>
+        <record id="view_base_document_layout_inherit_tmg_bg" model="ir.ui.view">
+            <field name="name">base.document.layout.tmg.bg</field>
+            <field name="model">base.document.layout</field>
+            <field name="inherit_id" ref="web.view_base_document_layout" />
+            <field name="arch" type="xml">
+                <xpath
+                    expr="//group[hasclass('o_document_layout_company')]/label[@for='primary_color']"
+                    position="after">
+                    <separator string="Fondo del documento" />
+                    <group>
+                        <field name="tmg_report_bg_mode" string="Tipo de fondo" widget="selection"
+                            required="1" />
+
+                        <field name="tmg_report_bg_color"
+                            invisible="tmg_report_bg_mode != 'color'" />
+
+                        <field name="tmg_report_bg_opacity"
+                            invisible="not (tmg_report_bg_mode in ('image_cover','image_contain','watermark'))" />
+
+                        <field name="tmg_report_bg_image"
+                            options="{'accepted_file_extensions': 'image/*'}"
+                            invisible="not (tmg_report_bg_mode in ('image_cover','image_contain','watermark'))"
+                            required="tmg_report_bg_mode in ('image_cover','image_contain','watermark')" />
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,15 @@
+.page {
+  position: relative;
+  overflow: hidden;
+}
+.tmg-rt-bg {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: center center;
+  z-index: 0;
+}
+.tmg-rt-content {
+  position: relative;
+  z-index: 1;
+}

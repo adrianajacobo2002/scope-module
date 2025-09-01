@@ -1,0 +1,26 @@
+<odoo>
+    <template id="report_saleorder_document_inherit_tmg_bg"
+        inherit_id="sale.report_saleorder_document">
+
+        <xpath expr="//div[contains(@class,'page')]" position="inside">
+
+            <t t-if="doc.company_id.tmg_report_bg_mode == 'color'">
+                <div class="tmg-rt-bg"
+                    t-attf-style="background-color: #{doc.company_id.tmg_report_bg_color};"></div>
+            </t>
+            <t
+                t-elif="doc.company_id.tmg_report_bg_mode in ('image_cover','image_contain','watermark')
+                 and doc.company_id.tmg_report_bg_image">
+                <div class="tmg-rt-bg"
+                    t-att-style="'background-image:url(/web/image/res.company/%s/tmg_report_bg_image?unique=%s); background-size:%s; opacity:%s;' % (
+               doc.company_id.id,
+               (doc.company_id.write_date or doc.company_id.create_date or '0'),
+               'cover' if doc.company_id.tmg_report_bg_mode == 'image_cover' else 'contain',
+               (doc.company_id.tmg_report_bg_opacity if doc.company_id.tmg_report_bg_mode != 'image_cover' else 1)
+             )">
+                </div>
+            </t>
+
+        </xpath>
+    </template>
+</odoo>
