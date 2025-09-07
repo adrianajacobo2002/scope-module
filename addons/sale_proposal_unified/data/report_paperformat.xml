@@ -11,7 +11,6 @@
             <field name="margin_left" eval="15" />
             <field name="margin_right" eval="15" />
             <field name="header_spacing" eval="12" />
-            <field name="header_line" eval="True" />
             <field name="dpi" eval="96" />
         </record>
     </data>
